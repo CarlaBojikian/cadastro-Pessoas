@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <script>
+            var usuarios = [];
+
+            function adicionaUsuario(){
+                var nome = document.getElementById('nome').value;
+                var idade = document.getElementById('idade').value;
+                if (usuarios.length === 0){
+                    usuarios.push({nome:nome,idade:idade});
+                }
+                else {
+                    for (i=0; i<usuarios.length; i++){
+                        if (nome === usuarios[i].nome){
+                            alert('Este nome já foi informado!');
+                            return;
+                        }
+                    }
+                    usuarios.push({nome:nome,idade:idade});
+                }
+                
+                refazerTabela();
+                document.getElementById('nome').value = '';
+                document.getElementById('idade').value = '';
+            }
+
+            function deletarUsuario(index){
+                usuarios.splice(index, 1);
+                refazerTabela();
+            }
+
+            function confirmarDelecao(index){
+                var confirmar = confirm('Deseja apagar esta linha?')
+                if (confirmar){
+                    deletarUsuario(index)
+                }
+            }
+
+            function editarUsuario(i){
+                document.getElementById('infoNome'+i).className = 'hidden';
+                document.getElementById('infoIdade'+i).className = 'hidden';
+                document.getElementById('deletar'+i).className = 'hidden';
+                document.getElementById('editar'+i).className = 'hidden';
+                document.getElementById('cancelar'+i).className = 'formatar_bordas';
+                document.getElementById('salvar'+i).className = 'formatar_bordas';
+                document.getElementById('nome'+i).className = 'formatar_bordas';
+                document.getElementById('idade'+i).className = 'formatar_bordas';
+            }
+
+            function salvarAlteracao(index){
+                var novoNome = document.getElementById('nome'+index).value;
+                var novaIdade = document.getElementById('idade'+index).value;
+                usuarios.splice(index, 1, {nome: novoNome, idade: novaIdade});
+                refazerTabela();
+            }
+
+            function cancelarOperacao(i){
+                document.getElementById('infoNome'+i).className = 'formatar_bordas';
+                document.getElementById('infoIdade'+i).className = 'formatar_bordas';
+                document.getElementById('deletar'+i).className = 'formatar_bordas';
+                document.getElementById('editar'+i).className = 'formatar_bordas';
+                document.getElementById('cancelar'+i).className = 'hidden';
+                document.getElementById('salvar'+i).className = 'hidden';
+                document.getElementById('nome'+i).className = 'hidden';
+                document.getElementById('idade'+i).className = 'hidden';
+            }
+
+            function ordemCrescente(a,b){
+                if (a.idade > b.idade){
+                        return 1;
+                    } else if (a.idade < b.idade){
+                        return -1;
+                    }
+                    return 0;
+            }
+
+            function ordemDecrescente(a,b){
+                if (a.idade > b.idade){
+                        return -1;
+                    } else if (a.idade < b.idade){
+                        return 1;
+                    }
+                    return 0;
+            }
+
+            var contador = 0;
+            function ordenar(){
+                if (contador % 2 === 0){
+                    usuarios.sort(ordemCrescente);
+                }
+                else {
+                    usuarios.sort(ordemDecrescente);
+                }
+                contador++;
+                refazerTabela();
+            }
+
+            function refazerTabela(){
+                var html = '';
+                html += '<table id="minhaTabela" align="center">\
+                        <tr align="center">\
+                        <th>Nome</th>\
+                        <th>\
+                        Idade\
+                        <button type="button" class="formatar_bordas" onclick="ordenar()"><i></i></button>\
+                        </th>\
+                        <th></th>\
+                        <th></th>\
+                        </tr>'
+                for (i=0; i<usuarios.length; i++){
+                    html += "<tr align='center'>\
+                                <td>\
+                                    <input type='text' id='nome"+i+"' class='hidden' value='" + usuarios[i].nome + "'>\
+                                    <p id='infoNome"+i+"'>" + usuarios[i].nome + "</p>\
+                                </td>\
+                                <td>\
+                                    <input type='text' id='idade"+i+"' class='hidden' value='" + usuarios[i].idade + "'>\
+                                    <p id='infoIdade"+i+"'>" + usuarios[i].idade + "</p>\
+                                </td>\
+                                <td>\
+                                    <button type='button' id='deletar"+i+"' class='formatar_bordas' onclick='confirmarDelecao("+i+")'>Deletar</button>\
+                                    <button type='button' id='cancelar"+i+"' class='hidden' onclick='cancelarOperacao("+i+")'>Cancelar</button>\
+                                </td>\
+                                <td>\
+                                    <button type='button' id='editar"+i+"' class='formatar_bordas' onclick='editarUsuario("+i+")'>Editar</button>\
+                                    <button type='button' id='salvar"+i+"' class='hidden' onclick='salvarAlteracao("+i+")'>Salvar</button>\
+                                </td>\
+                            </tr>";
+                }
+                document.getElementById('tabela').innerHTML = html;
+            }
+
+        </script>
+        <header>
+            Cadastro de pessoas
+        </header>
+        <div id='central'>
+            <div id="frase">
+                Por favor, nos informe
+                <br>
+                seu nome e idade
+                <br>
+                para colocarmos na tabela.
+                <br><br>
+                É rapidinho ;)
+            </div>
+            <form id="cadastro">
+                Nome
+                <br>
+                <input type='text' class="formatar_bordas" id='nome'>
+                <br>
+                Idade
+                <br>
+                <input type='text' class="formatar_bordas" id='idade'>
+                <br>
+                <button id='botao_salvar' class="formatar_bordas" type='button' onclick='adicionaUsuario()'>Salvar</button>
+            </form>
+            <div id='tabela'>
+                Tabela vazia.
+            </div>
+        </div>
+    </body>
+    <footer>
+    </footer>
+</html>
